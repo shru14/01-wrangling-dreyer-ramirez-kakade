@@ -1,5 +1,4 @@
-# Working with dplyr
-
+# Cleaning and wrangling data with janitor and forcats
 
 ## Summary
 
@@ -7,25 +6,26 @@ This repository provides materials for a session that is part of the [I2DS Tools
 
 ### Session contents
 
-This session will introduce you to the modern data wrangling workflow with R and dplyr. Data wrangling is one of the core steps in the data science workflow. dplyr is a grammar of data manipulation, providing a consistent set of verbs that help you solve the most common data manipulation challenges, including the manipulation of datasets and variables. 
+This session will introduce you to the intricacies of factor management with R using the "forcats" package, as well as data cleaning and tidying with the "janitor" package. Both packages are essential for efficient data manipulation and ensuring clean and consistent datasets.
 
 ### Main learning objectives
 
-The goals of this session are to (1) equip you with conceptual knowledge about the dplyr package and data wrangling workflow, (2) show you the three key verbs of the pacakge, and (3) provide you with practice material as well as some further readings.
-
+The goals of this session are to:
+1. Equip you with conceptual knowledge about the "forcats" and "janitor" packages.
+2. Demonstrate various functions and utilities provided by both packages.
+3. Provide you with practice material on how to efficiently wrangle and clean data with both packages.
 
 ## Instructors
 
-- Simon Munzert ([website](http://simonmunzert.github.io/), [twitter](https://twitter.com/simonsaysnothin))
-- Kermit the Frog ([website](https://en.wikipedia.org/wiki/Kermit_the_Frog), [twitter](https://twitter.com/KermitTheFrog))
-
+- Elena Dreyer ([website](http://simonmunzert.github.io/), [twitter](https://twitter.com/simonsaysnothin))
+- Luis Fernando Ramirez Ruiz ([website](https://en.wikipedia.org/wiki/Kermit_the_Frog), [twitter](https://twitter.com/KermitTheFrog))
+- Shruti Kakade
 
 ## Further resources
 
-- [dplyr overview at dplyr.tidyverse.org](https://dplyr.tidyverse.org/)
-- [Hands-on dplyr tutorial by Data School on YouTube](https://www.youtube.com/watch?v=jWjqLW-u3hc)
-- [R for Data Science book - part on data wrangling](https://r4ds.had.co.nz/wrangle-intro.html)
-
+- [forcats overview at forcats.tidyverse.org](https://forcats.tidyverse.org/)
+- [janitor package on CRAN](https://cran.r-project.org/web/packages/janitor/index.html)
+- [R for Data Science book - part on factors with forcats](https://r4ds.had.co.nz/factors.html)
 
 ## License
 
@@ -33,6 +33,6 @@ The material in this repository is made available under the [MIT license](http:/
 
 ## Statement of contributions
 
-**Simon Munzert** prepared the practice material and post-processed the recording.
+**Elena Dreyer** prepared the presentation slides for "forcats" and contributed to the practice material.
 
-**Kermit the Frog** prepared the presentation slides and recording. He also provided an example to the practice material.
+**Luis Fernando Ramirez Ruiz** prepared the presentation slides for "janitor" and contributed to the practice material.
