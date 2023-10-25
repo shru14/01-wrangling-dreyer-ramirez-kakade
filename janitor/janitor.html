@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Introduction to Data Science</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Luis Fernando Ramirez, Elena Dreyer, and Shruti Kakade" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/metropolis.css" rel="stylesheet" />
+    <link href="libs/remark-css/metropolis-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Introduction to Data Science
+]
+.subtitle[
+## Data Wrangling with <code>Janitor</code>
+]
+.author[
+### Luis Fernando Ramirez, Elena Dreyer, and Shruti Kakade
+]
+.institute[
+### Hertie School | <a href="https://github.com/intro-to-data-science-23">GRAD-C11/E1339</a>
+]
+
+---
+
+
+
+
+
+&lt;style type="text/css"&gt;
+/*.columns { display: flex; }*/
+
+.pull-left {
+  padding-top: 0px;
+}
+
+.pull-left-narrow {
+  float: left;
+  width: 15%;
+  padding-bottom: 5px
+}
+
+.pull-right-wide {
+  float: right;
+  width: 85%;
+  padding-top: 0;
+  padding-bottom: 5px/* Set to 0 or any value you feel looks right */
+}
+
+.column {
+  float: left;
+  width: 20%;
+  padding: 5px;
+}
+
+.forcats-overview .column {
+  float: left;
+  width: 19%;
+  padding: 1% 1%;
+  box-sizing: border-box;  /* to ensure padding is included in width */
+}
+&lt;/style&gt;
+---
+class: inverse, center, middle
+
+# Get Started
+---
+
+# Overview
+
+*Janitor* is a package built by Sam Firke. Its main functionalities include:
+1. Simple functions for *cleaning* and *examining* data
+2. It is specifically optimized for users, so its preferred audience are *beginners* and *intermediate* R coders. 
+3. *Advanced* R users can do data wrangling data faster.
+
+&gt; "Data scientists, according to interviews and expert estimates, spend from 50 percent to 80 percent of their time mired in this more mundane labor of collecting and preparing unruly digital data, before it can be explored for useful nuggets." - The New York Times
+
+### Main User-cases:
+#### Unstructured or raw data:
+
+- perfectly *format* data.frame column names; 
+- create and format *frequency tables of one, two, or three variables*; 
+- provide other tools for *cleaning and examining data.frames*.
+---
+
+# Overall: 
+
+#### *Janitor* is a *tidyverse-oriented package*. It plays nicely with the %&gt;% pipe and is optimized for cleaning data brought in with the readr and readxl packages.
+
+- It provides simple functions that can be used to quickly and effectively clean and manage data
+
+## Let's get started
+### Step 1: 
+**Installing library**:
+--&gt; `install.packages("janitor")`
+--&gt; `library(janitor)`
+
+
+```r
+#load libraries 
+library(janitor)
+```
+
+```
+## 
+## Attaching package: 'janitor'
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     chisq.test, fisher.test
+```
+
+```r
+library(readr)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+```
+
+---
+
+# First User-case: Cleaning data
+
+###**Clean data frame names with `clean_names()`**
+
+Datasets not always include clear and concise names for columns. Column names in a dataset should be 
+
+- Function to be used: *clean_names*
+- This function can be used for piped dataframes workflows. 
+
+&gt; “Variable and function names should use only lowercase letters, numbers, and underscores. Use underscores (so called snake_case) to separate words within a name." -  [The tidyverse style guide](https://style.tidyverse.org/syntax.html)
+ 
+---
+
+#*Some Examples:*
+
+##Spaces, caps, special characters in columns names:
+
+```r
+#We can create a test data frame with variable names that contain special characters, dots instead of "_" and Caps on. 
+
+dirty_data &lt;- as.data.frame(matrix(ncol = 5))
+names(dirty_data) &lt;- c("FIRST Name", "Last Name" ,"cl@33#***","CAPS", "scored.goals.season")
+clean_data &lt;- dirty_data |&gt; 
+  clean_names()
+
+colnames(clean_data)
+```
+
+```
+## [1] "first_name"          "last_name"           "cl_33_number"       
+## [4] "caps"                "scored_goals_season"
+```
+---
+
+# Using dataset from a public innovation lab in Mexico City
+
+
+```r
+#Using the a real-life dataset 
+#download this dataset from a mexican public agency about legal pregnancy interruption 
+#from 2016 - 2018 updated in 2023. URL:
+#https://datos.cdmx.gob.mx/dataset/interrupcion-legal-del-embarazo/resource/755e9b54-401d-40a6-8787-c45a8f97937e
+
+data &lt;- read.csv("ile_2016_2018.csv", stringsAsFactors = F, fileEncoding = "UTF-8")
+#don't forget to include the path to your WD when importing a dataset in the project space. (colnames are in spanish)
+
+names(data)[1:5]
+```
+
+```
+## [1] "anio"          "mes"           "fecha_ingreso" "referida"     
+## [5] "estado_civil"
+```
+
+```r
+data_clean_names &lt;-  clean_names(data)
+
+names(data_clean_names)[1:5]
+```
+
+```
+## [1] "anio"          "mes"           "fecha_ingreso" "referida"     
+## [5] "estado_civil"
+```
+
+---
+
+#*User-case 2: Use tabyl function* 
+### This dataset is perfect for us to use the tabyl function to display neat tables on variables we want to analyze.
+
+Why not using *table()*? 
+- we cannot using the pipe %&gt;% with this base R function 
+- table() doesn't give us data frames as outputs. (Tabyl gives us a dataframe in tidy format consistent with tidyverse)
+- Only gives us one-dimensional variables, and tabyl provides automatic proportions and counts. 
+####Example 1: One-dimensional table
+
+
+```r
+# a one-dimensional table
+tabyl(data_clean_names$anio)
+```
+
+```
+##  data_clean_names$anio     n      percent
+##                   2015     1 1.947268e-05
+##                   2016 18038 3.512482e-01
+##                   2017 17597 3.426607e-01
+##                   2018 15718 3.060716e-01
+```
+
+---
+#Example 2: two-way table
+
+```r
+table&lt;- data_clean_names %&gt;% 
+  tabyl(anio, estado_civil) |&gt; 
+  drop_na(anio)
+print(table)
+```
+
+```
+##  anio Casada Divorciada Separada Soltera Unión libre Viuda NA_
+##  2015      0          0        1       0           0     0   0
+##  2016   2006        581      301    9741        5168    58 183
+##  2017   1950        420      267    9658        5045    55 202
+##  2018   1589        370      204    8880        4540    38  97
+```
+
+---
+# Now we recreate percentages
+###Here, we have to do some additional coding the add the % in this twoway table. 
+
+```r
+#now with % on both tables
+table2 &lt;- data_clean_names |&gt; 
+  tabyl(anio, estado_civil) |&gt; 
+  adorn_totals("col") |&gt;              #Total per row
+  adorn_percentages("row") |&gt;         #percentage per row
+  adorn_pct_formatting(digits = 2) |&gt; #rounded value
+  adorn_ns() |&gt;                       #adding absolute numbers
+  adorn_title()                      #adds variable name
+print(table2)
+```
+
+```
+##         estado_civil                                                        
+##  anio         Casada  Divorciada      Separada        Soltera    Unión libre
+##  2015  0.00%     (0) 0.00%   (0) 100.00%   (1)  0.00%     (0)  0.00%     (0)
+##  2016 11.12% (2,006) 3.22% (581)   1.67% (301) 54.00% (9,741) 28.65% (5,168)
+##  2017 11.08% (1,950) 2.39% (420)   1.52% (267) 54.88% (9,658) 28.67% (5,045)
+##  2018 10.11% (1,589) 2.35% (370)   1.30% (204) 56.50% (8,880) 28.88% (4,540)
+##                                         
+##       Viuda         NA_            Total
+##  0.00%  (0) 0.00%   (0) 100.00%      (1)
+##  0.32% (58) 1.01% (183) 100.00% (18,038)
+##  0.31% (55) 1.15% (202) 100.00% (17,597)
+##  0.24% (38) 0.62%  (97) 100.00% (15,718)
+```
+
+---
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
