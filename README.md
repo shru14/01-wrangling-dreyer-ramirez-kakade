@@ -19,7 +19,7 @@ The goals of this session are to:
 
 - Elena Dreyer ([website](http://simonmunzert.github.io/), [twitter](https://twitter.com/simonsaysnothin))
 - Luis Fernando Ramirez Ruiz ([website](https://en.wikipedia.org/wiki/Kermit_the_Frog), [twitter](https://twitter.com/KermitTheFrog))
-- Shruti Kakade
+- Shruti Kakade ([website](https://www.linkedin.com/in/shrutikakade14/), [twitter](https://twitter.com/shruti_kakade_))
 
 ## Further resources
 
