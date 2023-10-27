@@ -8,6 +8,8 @@
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link href="libs/remark-css/metropolis.css" rel="stylesheet" />
     <link href="libs/remark-css/metropolis-fonts.css" rel="stylesheet" />
+    <script src="libs/kePrint/kePrint.js"></script>
+    <link href="libs/lightable/lightable.css" rel="stylesheet" />
   </head>
   <body>
     <textarea id="source">
@@ -122,6 +124,30 @@ library(readr)
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
+library(knitr)
+```
+
+```
+## Warning: package 'knitr' was built under R version 4.2.3
+```
+
+```r
+library(kableExtra)
+```
+
+```
+## Warning: package 'kableExtra' was built under R version 4.2.3
+```
+
+```
+## 
+## Attaching package: 'kableExtra'
+```
+
+```
+## The following object is masked from 'package:dplyr':
+## 
+##     group_rows
 ```
 
 ---
@@ -266,6 +292,312 @@ print(table2)
 ```
 
 ---
+#With Three variables
+As it is expected, oftentimes we need tables that can relate over two variables at once.
+Although, for this reason we need prettier design to relate the information easily. 
+
+For this reason, we can do the following: create a table with tabyl and 
+use adorn for prettier designs.
+Three-way tabyl 
+
+```r
+data_clean_names  |&gt; 
+  tabyl(resultado_ile, recibio_consejeria, anio) |&gt; 
+  adorn_percentages("all") |&gt; 
+  adorn_pct_formatting(digits = 1) |&gt;  
+  adorn_title() |&gt; 
+  kable() |&gt; 
+  kable_styling(font_size = 8.5)#To fit the table by reducing font size
+```
+
+&lt;table class="kable_wrapper table" style="font-size: 8.5px; margin-left: auto; margin-right: auto;"&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td&gt; 
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; recibio_consejeria &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; resultado_ile &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Si &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Completa &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Otro &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 100.0% &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+ &lt;/td&gt;
+   &lt;td&gt; 
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; recibio_consejeria &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; resultado_ile &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Si &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; NA_ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Completa &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.1% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 34.1% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Otro &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2.6% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1.5% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 59.0% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2.6% &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+ &lt;/td&gt;
+   &lt;td&gt; 
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; recibio_consejeria &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; resultado_ile &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Si &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; NA_ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Completa &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Otro &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.8% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 96.0% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 3.1% &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+ &lt;/td&gt;
+   &lt;td&gt; 
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; recibio_consejeria &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; resultado_ile &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Si &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; NA_ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Completa &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.7% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 99.1% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.1% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Otro &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.1% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.1% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0% &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+ &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+---
+#Extra useful functions: 
+###Fixing dates, Rounding numbers, and detect duplicated records.
+.pull-left[
+For fixing dates a common error with excel dates we have the option to use janitor. 
+The "excel_numeric_to_date()" function solves the problem where in Excel dates are represented in numbers. 
+
+This function turns Excel's numeric format into R date format. 
+
+
+```r
+library(janitor)
+excel_date &lt;- 44197 # this means the number of days since a 
+#specific start date (january 1 1900 or january 1 1904 depending on the system). 
+r_date &lt;- excel_numeric_to_date(excel_date)
+print(r_date)
+```
+
+```
+## [1] "2021-01-01"
+```
+]
+.pull-right[We also have the "convert_to_date()" function which converts a mix of date and datetime formats to date.
+
+```r
+excel_dates &lt;- c(44197, 44228)  # Corresponding to 2021-01-01 and 2021-02-01
+r_dates &lt;- convert_to_date(excel_dates)
+print(r_dates)  # Outputs "2021-01-01" and "2021-02-01
+```
+
+```
+## [1] "2021-01-01" "2021-02-01"
+```
+]
+---
+
+#For rounding numbers 
+
+
+This function "round_to_fraction" to round decimals to the nearest fraction. 
+WE don't use base R "round" function uses "bankers rounding" which means that halves are rounded to the nearest even number. 
+Example: 
+
+
+```r
+# Rounding to the nearest quarter que denominator = 4.
+round_to_fraction(0.37, 4)  
+```
+
+```
+## [1] 0.25
+```
+
+```r
+numbers&lt;- c(3.6,2.4) 
+round(numbers)
+```
+
+```
+## [1] 4 2
+```
+---
+# For detecting duplicated records 
+In this case we use the 'get_dupes()' function.  
+- Detects duplicate records when cleaning data in specific columns
+- The output includes a dataframe with the specified columns (or all), and 
+a column named 'dupe_count' which has the number of times each value 
+appears in the dataset.
+
+```r
+#EXAMPLE: Create a sample dataframe
+df &lt;- data.frame(ID = c(1, 2, 3, 4, 2, 5),
+                 Name = c("Alice", "Bob", "Charlie", "David", "Bob", "Eve"))
+# Identify duplicates in the ID column
+get_dupes(df, ID)
+```
+
+```
+##   ID dupe_count Name
+## 1  2          2  Bob
+## 2  2          2  Bob
+```
+
+```r
+# Identify duplicates based on combinations of ID and Name
+get_dupes(df, ID, Name)
+```
+
+```
+##   ID Name dupe_count
+## 1  2  Bob          2
+## 2  2  Bob          2
+```
+---
+#Further useful functions:
+###Dealing with NAs.
+
+.pull-left[
+- `remove_empty()`: Remove empty rows or columns from a dataframe.
+- `use_first_valid_of()`: Replace NAs in the first column with the first Non-NA value 
+from subsequent columns. 
+- `convert_to_na()`: Convert specific values in a dataframe to NAs.
+]
+
+.pull-right[
+
+
+
+]
+---
+#Resources
+####For original material on the `Janitor` package
+
+- [Package janitor documentation](https://cran.r-project.org/web/packages/janitor/janitor.pdf)
+- [GitHub Repository](https://github.com/sfirke/janitor)
+
+####Additional Resources: 
+
+
+
+
+
+
+
+
+
+
 
 
     </textarea>
