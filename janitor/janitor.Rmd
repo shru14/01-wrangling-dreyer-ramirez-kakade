@@ -1,0 +1,325 @@
+---
+title: "Introduction to Data Science"
+subtitle: "Data Wrangling with `Janitor`"
+author: "Luis Fernando Ramirez, Elena Dreyer, and Shruti Kakade"
+institute: "Hertie School | [GRAD-C11/E1339](https://github.com/intro-to-data-science-23)" #"`r format(Sys.time(), '%d %B %Y')`"
+output:
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+      hash: true
+---
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(tidyverse)
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_mono_accent(
+  base_color = "#1c5253",
+  header_font_google = google_font("Josefin Sans"),
+  text_font_google   = google_font("Montserrat", "300", "300i"),
+  code_font_google   = google_font("Fira Mono")
+)
+```
+
+```{css, echo=FALSE}
+/*.columns { display: flex; }*/
+
+.pull-left {
+  padding-top: 0px;
+}
+
+.pull-left-narrow {
+  float: left;
+  width: 15%;
+  padding-bottom: 5px
+}
+
+.pull-right-wide {
+  float: right;
+  width: 85%;
+  padding-top: 0;
+  padding-bottom: 5px/* Set to 0 or any value you feel looks right */
+}
+
+.column {
+  float: left;
+  width: 20%;
+  padding: 5px;
+}
+
+.forcats-overview .column {
+  float: left;
+  width: 19%;
+  padding: 1% 1%;
+  box-sizing: border-box;  /* to ensure padding is included in width */
+}
+```
+---
+class: inverse, center, middle
+
+# Get Started
+---
+
+# Overview
+
+*Janitor* is a package built by Sam Firke. Its main functionalities include:
+1. Simple functions for *cleaning* and *examining* data
+2. It is specifically optimized for users, so its preferred audience are *beginners* and *intermediate* R coders. 
+3. *Advanced* R users can do data wrangling data faster.
+
+> "Data scientists, according to interviews and expert estimates, spend from 50 percent to 80 percent of their time mired in this more mundane labor of collecting and preparing unruly digital data, before it can be explored for useful nuggets." - The New York Times
+
+### Main User-cases:
+#### Unstructured or raw data:
+
+- perfectly *format* data.frame column names; 
+- create and format *frequency tables of one, two, or three variables*; 
+- provide other tools for *cleaning and examining data.frames*.
+---
+
+# Overall: 
+
+#### *Janitor* is a *tidyverse-oriented package*. It plays nicely with the %>% pipe and is optimized for cleaning data brought in with the readr and readxl packages.
+
+- It provides simple functions that can be used to quickly and effectively clean and manage data
+
+## Let's get started
+### Step 1: 
+**Installing library**:
+--> `install.packages("janitor")`
+--> `library(janitor)`
+
+```{r} 
+#load libraries 
+library(janitor)
+library(readr)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+```
+
+---
+
+# First User-case: Cleaning data
+
+###**Clean data frame names with `clean_names()`**
+
+Datasets not always include clear and concise names for columns. Column names in a dataset should be 
+
+- Function to be used: *clean_names*
+- This function can be used for piped dataframes workflows. 
+
+> “Variable and function names should use only lowercase letters, numbers, and underscores. Use underscores (so called snake_case) to separate words within a name." -  [The tidyverse style guide](https://style.tidyverse.org/syntax.html)
+ 
+---
+
+#*Some Examples:*
+
+##Spaces, caps, special characters in columns names:
+```{r}
+
+#We can create a test data frame with variable names that contain special characters, dots instead of "_" and Caps on. 
+
+dirty_data <- as.data.frame(matrix(ncol = 5))
+names(dirty_data) <- c("FIRST Name", "Last Name" ,"cl@33#***","CAPS", "scored.goals.season")
+clean_data <- dirty_data |> 
+  clean_names()
+
+colnames(clean_data)
+```
+---
+
+# Using dataset from a public innovation lab in Mexico City
+
+```{r}
+#Using the a real-life dataset 
+#download this dataset from a mexican public agency about legal pregnancy interruption 
+#from 2016 - 2018 updated in 2023. URL:
+#https://datos.cdmx.gob.mx/dataset/interrupcion-legal-del-embarazo/resource/755e9b54-401d-40a6-8787-c45a8f97937e
+
+data <- read.csv("ile_2016_2018.csv", stringsAsFactors = F, fileEncoding = "UTF-8")
+#don't forget to include the path to your WD when importing a dataset in the project space. (colnames are in spanish)
+
+names(data)[1:5]
+
+data_clean_names <-  clean_names(data)
+
+names(data_clean_names)[1:5]
+
+```
+
+---
+
+#*User-case 2: Use tabyl function* 
+### This dataset is perfect for us to use the tabyl function to display neat tables on variables we want to analyze.
+
+Why not using *table()*? 
+- we cannot using the pipe %>% with this base R function 
+- table() doesn't give us data frames as outputs. (Tabyl gives us a dataframe in tidy format consistent with tidyverse)
+- Only gives us one-dimensional variables, and tabyl provides automatic proportions and counts. 
+####Example 1: One-dimensional table
+
+```{r}
+# a one-dimensional table
+tabyl(data_clean_names$anio)
+
+```
+
+---
+#Example 2: two-way table
+```{r}
+table<- data_clean_names %>% 
+  tabyl(anio, estado_civil) |> 
+  drop_na(anio)
+print(table)
+```
+
+---
+# Now we recreate percentages
+###Here, we have to do some additional coding the add the % in this twoway table. 
+```{r}
+#now with % on both tables
+table2 <- data_clean_names |> 
+  tabyl(anio, estado_civil) |> 
+  adorn_totals("col") |>              #Total per row
+  adorn_percentages("row") |>         #percentage per row
+  adorn_pct_formatting(digits = 2) |> #rounded value
+  adorn_ns() |>                       #adding absolute numbers
+  adorn_title()                      #adds variable name
+print(table2)
+```
+
+---
+#With Three variables
+As it is expected, oftentimes we need tables that can relate over two variables at once.
+Although, for this reason we need prettier design to relate the information easily. 
+
+For this reason, we can do the following: create a table with tabyl and 
+use adorn for prettier designs.
+Three-way tabyl 
+```{r}
+data_clean_names  |> 
+  tabyl(resultado_ile, recibio_consejeria, anio) |> 
+  adorn_percentages("all") |> 
+  adorn_pct_formatting(digits = 1) |>  
+  adorn_title() |> 
+  kable() |> 
+  kable_styling(font_size = 8.5)#To fit the table by reducing font size
+
+```
+---
+#Extra useful functions: 
+###Fixing dates, Rounding numbers, and detect duplicated records.
+.pull-left[
+For fixing dates a common error with excel dates we have the option to use janitor. 
+The "excel_numeric_to_date()" function solves the problem where in Excel dates are represented in numbers. 
+
+This function turns Excel's numeric format into R date format. 
+
+```{r}
+library(janitor)
+excel_date <- 44197 # this means the number of days since a 
+#specific start date (january 1 1900 or january 1 1904 depending on the system). 
+r_date <- excel_numeric_to_date(excel_date)
+print(r_date)
+
+```
+]
+.pull-right[We also have the "convert_to_date()" function which converts a mix of date and datetime formats to date.
+```{r}
+excel_dates <- c(44197, 44228)  # Corresponding to 2021-01-01 and 2021-02-01
+r_dates <- convert_to_date(excel_dates)
+print(r_dates)  # Outputs "2021-01-01" and "2021-02-01
+```
+]
+---
+
+#For rounding numbers 
+
+
+This function "round_to_fraction" to round decimals to the nearest fraction. 
+WE don't use base R "round" function uses "bankers rounding" which means that halves are rounded to the nearest even number. 
+Example: 
+
+```{r}
+# Rounding to the nearest quarter que denominator = 4.
+round_to_fraction(0.37, 4)  
+
+numbers<- c(3.6,2.4) 
+round(numbers)
+
+```
+---
+# For detecting duplicated records 
+In this case we use the 'get_dupes()' function.  
+- Detects duplicate records when cleaning data in specific columns
+- The output includes a dataframe with the specified columns (or all), and 
+a column named 'dupe_count' which has the number of times each value 
+appears in the dataset.
+```{r}
+#EXAMPLE: Create a sample dataframe
+df <- data.frame(ID = c(1, 2, 3, 4, 2, 5),
+                 Name = c("Alice", "Bob", "Charlie", "David", "Bob", "Eve"))
+# Identify duplicates in the ID column
+get_dupes(df, ID)
+# Identify duplicates based on combinations of ID and Name
+get_dupes(df, ID, Name)
+```
+---
+#Further useful functions:
+###Dealing with NAs.
+
+.pull-left[
+- `remove_empty()`: Remove empty rows or columns from a dataframe.
+- `convert_to_na()`: Convert specific values in a dataframe to NAs.
+]
+
+.pull-right[
+
+```{r}
+#sample data
+df <- data.frame(
+  Name = c("Alice", "Bob", "Charlie", "David", "Eve", "Frank"),
+  Age = c(25, NA, 30, 32, NA, NA),
+  Gender = c("Female", "Male", "", "Male", "Female", ""),
+  Alt_Gender = c("", "", "Male", "", "", "Male"),
+  Comments = c("", "", "", "", "", ""))
+#remove empty 
+df_clean <- df %>% 
+  remove_empty(c("rows", "cols"))
+#convert_to_na()
+#df_clean <- df_clean %>% 
+ # convert_to_na(list(Gender = "", Alt_Gender = "", Name = ""))
+```
+]
+---
+#Resources
+
+####For original material on the `Janitor` package
+
+- [Package janitor documentation](https://cran.r-project.org/web/packages/janitor/janitor.pdf)
+- [GitHub Repository](https://github.com/sfirke/janitor)
+
+####Additional Resources: 
+
+
+
+
+
+
+
+
+
+
+
+
