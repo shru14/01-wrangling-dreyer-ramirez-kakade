@@ -109,6 +109,10 @@ library(janitor)
 ```
 
 ```
+## Warning: package 'janitor' was built under R version 4.2.3
+```
+
+```
 ## 
 ## Attaching package: 'janitor'
 ```
@@ -570,18 +574,31 @@ get_dupes(df, ID, Name)
 
 .pull-left[
 - `remove_empty()`: Remove empty rows or columns from a dataframe.
-- `use_first_valid_of()`: Replace NAs in the first column with the first Non-NA value 
-from subsequent columns. 
 - `convert_to_na()`: Convert specific values in a dataframe to NAs.
 ]
 
 .pull-right[
 
 
-
+```r
+#sample data
+df &lt;- data.frame(
+  Name = c("Alice", "Bob", "Charlie", "David", "Eve", "Frank"),
+  Age = c(25, NA, 30, 32, NA, NA),
+  Gender = c("Female", "Male", "", "Male", "Female", ""),
+  Alt_Gender = c("", "", "Male", "", "", "Male"),
+  Comments = c("", "", "", "", "", ""))
+#remove empty 
+df_clean &lt;- df %&gt;% 
+  remove_empty(c("rows", "cols"))
+#convert_to_na()
+#df_clean &lt;- df_clean %&gt;% 
+ # convert_to_na(list(Gender = "", Alt_Gender = "", Name = ""))
+```
 ]
 ---
 #Resources
+
 ####For original material on the `Janitor` package
 
 - [Package janitor documentation](https://cran.r-project.org/web/packages/janitor/janitor.pdf)
@@ -606,7 +623,9 @@ from subsequent columns.
 <script>var slideshow = remark.create({
 "highlightStyle": "github",
 "highlightLines": true,
-"countIncrementalSlides": false
+"countIncrementalSlides": false,
+"ratio": "16:9",
+"hash": true
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));

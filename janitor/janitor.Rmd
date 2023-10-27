@@ -11,6 +11,8 @@ output:
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
+      ratio: '16:9'
+      hash: true
 ---
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
@@ -279,8 +281,6 @@ get_dupes(df, ID, Name)
 
 .pull-left[
 - `remove_empty()`: Remove empty rows or columns from a dataframe.
-- `use_first_valid_of()`: Replace NAs in the first column with the first Non-NA value 
-from subsequent columns. 
 - `convert_to_na()`: Convert specific values in a dataframe to NAs.
 ]
 
@@ -293,22 +293,18 @@ df <- data.frame(
   Age = c(25, NA, 30, 32, NA, NA),
   Gender = c("Female", "Male", "", "Male", "Female", ""),
   Alt_Gender = c("", "", "Male", "", "", "Male"),
-  Comments = c("", "", "", "", "", "")
-)
+  Comments = c("", "", "", "", "", ""))
 #remove empty 
 df_clean <- df %>% 
   remove_empty(c("rows", "cols"))
-#use_first_valid_of()
-df_clean <- df_clean %>% 
-  use_first_valid_of(Gender, Alt_Gender)
 #convert_to_na()
-df_clean <- df_clean %>% 
-  convert_to_na(list(Gender = "", Alt_Gender = "", Name = ""))
+#df_clean <- df_clean %>% 
+ # convert_to_na(list(Gender = "", Alt_Gender = "", Name = ""))
 ```
-
 ]
 ---
 #Resources
+
 ####For original material on the `Janitor` package
 
 - [Package janitor documentation](https://cran.r-project.org/web/packages/janitor/janitor.pdf)
